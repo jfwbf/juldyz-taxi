@@ -1,32 +1,179 @@
-# Prerequisites
-*.d
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+using namespace std;
 
-# Precompiled Headers
-*.gch
-*.pch
+class Driver {
+private:
+    string name;
+    double rating;
+    string carBrand;
+    string carColor;
+    string carNumber;
+    string carClass;
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+public:
 
-# Fortran module files
-*.mod
-*.smod
+    Driver(const string& name, double rating, const string& carBrand, const string& carColor, const string& carNumber, const string& carClass)
+        : name(name), rating(rating), carBrand(carBrand), carColor(carColor), carNumber(carNumber), carClass(carClass) {}
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
 
-# Executables
-*.exe
-*.out
-*.app
+    string getName() const { return name; }
+    double getRating() const { return rating; }
+    string getCarBrand() const { return carBrand; }
+    string getCarColor() const { return carColor; }
+    string getCarNumber() const { return carNumber; }
+    string getCarClass() const { return carClass; }
+
+};
+
+void printDrivers(const vector<Driver>& drivers) {
+    cout << "Qol jetimdi jurgizushiler:\n";
+    for (size_t i = 0; i < drivers.size(); ++i) {
+        cout << i + 1 << ". " << drivers[i].getName() << " (Rating:: " << drivers[i].getRating() << ", Kolik markasy: " << drivers[i].getCarBrand() << ", Kolik tusi: " << drivers[i].getCarColor() << ", Kolik nomiri: " << drivers[i].getCarNumber() << ", Kolik klassy: " << drivers[i].getCarClass() << ")\n";
+    }
+}
+
+
+
+void sortDriversByRating(vector<Driver>& drivers) {
+    int n = drivers.size();
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+
+            if (drivers[j].getRating() < drivers[j + 1].getRating()) {
+
+                swap(drivers[j], drivers[j + 1]);
+            }
+        }
+    }
+}
+
+
+
+Driver findDriverByName(const vector<Driver>& drivers, const string& name) {
+    for (const Driver& driver : drivers) {
+        if (driver.getName() == name) {
+            return driver;
+        }
+    }
+
+    return Driver("", 0.0, "", "", "", "");
+}
+
+double calculateTripCost(double distance, double pricePerKm) {
+    return distance * pricePerKm;
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    vector<Driver> drivers = {
+        {"Arman", 4.8, "Toyota", "Синий", "KZ12345","business"},
+        {"Beksultan", 4.9, "Chevrolet", "Красный", "KZ67890","business"},
+        {"David", 4.7, "Honda", "Зеленый", "KZ47895","business"},
+        {"Arnur", 4.5, "Ford", "Желтый", "KZ98765","business"},
+        {"Janar", 4.9, "Toyota", "Черный", "KZ12348","comfort"},
+        {"Liam", 4.9, "Sedan", "Красный", "KZ45870","economy"},
+        {"Andrei", 4.7, "Hyundai Solaris", "Зеленый", "KZ75941","economy"},
+        {"Madi", 4.6, "Renault Logan", "Желтый", "KZ48924","economy"}
+    };
+    printDrivers(drivers);
+
+
+
+    string departure, destination;
+    cout << "Qaidan: ";
+    getline(cin, departure);
+    cout << "Qaida: ";
+    getline(cin, destination);
+
+
+    double distance, pricePerKm;
+    cout << "Qashyqtyq (km): ";
+    cin >> distance;
+    cout << "km-ge bagasy: ";
+    cin >> pricePerKm;
+
+    double tripCost = calculateTripCost(distance, pricePerKm);
+
+
+    cout << "Baga: " << tripCost << " tg" << endl;
+
+
+    sortDriversByRating(drivers);
+
+
+    printDrivers(drivers);
+
+    string driverName;
+    cout << "Zhurgizushi tandanyz (atyn jazynyz): ";
+    cin.ignore();
+    getline(cin, driverName);
+
+
+
+    Driver selectedDriver = findDriverByName(drivers, driverName);
+
+    if (selectedDriver.getName() != "") {
+        cout << "Tandalyngan zhurgizushi: " << selectedDriver.getName() << " (rating: " << selectedDriver.getRating() << ", Kolik markasy: " << selectedDriver.getCarBrand() << ", Kolik tusi: " << selectedDriver.getCarColor() << ", Kolik nomeri: " << selectedDriver.getCarNumber() << ", Kolik klassy: " << selectedDriver.getCarClass() << "\n";
+
+
+
+        char deliveryOption;
+        cout << "Zattar jetkizginiz keledi me? (y/n): ";
+        cin >> deliveryOption;
+
+        if (deliveryOption == 'y' || deliveryOption == 'Y') {
+
+            cout << "Zattar sanyn jazynyz: ";
+            int numItems;
+            cin >> numItems;
+            double itemDeliveryCost = numItems * 100;
+            tripCost += itemDeliveryCost;
+            cout << "Zat jetkizu quny: " << itemDeliveryCost << " KZT\n";
+        }
+
+        cout << "Tolyq quny: " << tripCost << " KZT\n";
+        string choice;
+        cout << "taksige aldyn ala tapsyrys berginiz kele me? (y/n): ";
+        cin >> choice;
+
+        if (choice == "y" || choice == "Y") {
+            double time;
+            cout << "Uaqytyn engiziniz:(s.m.): ";
+            cin >> time;
+            cout << "Siz taksige tapsyrys berdiniz " << time << endl;
+        }
+        int paymentMethod;
+        cout << "Tolem adisin tandanyz:\n";
+        cout << "1. Qolma-qol aqsha\n";
+        cout << "2. Karta\n";
+        cout << "3. Banktik audaru\n";
+        cout << "Tolem adisinin nomiri: ";
+        cin >> paymentMethod;
+
+        switch (paymentMethod) {
+        case 1:
+            cout << "Qolma-qol aqsha\n";
+            break;
+        case 2:
+            cout << "Karta\n";
+            break;
+        case 3:
+            cout << "Banktik audaru\n";
+            break;
+        default:
+            cout << "tolem adisinin nomiri durys emes\n";
+            break;
+        }
+        cout << "Taksige tapsyrysynyz qabyldandy. Jurgizushini kutiniz." << endl;
+    }
+    else {
+
+        cout << "Jurgizushi tabylmady.\n";
+    }
+
+
+}
